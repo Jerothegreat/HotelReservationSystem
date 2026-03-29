@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Royal Ledger - Jero &amp; Vonn's Royal Chambers</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&amp;family=Cinzel+Decorative:wght@400;700;900&amp;family=Crimson+Pro:ital,wght@0,200..900;1,200..900&amp;family=Public+Sans:ital,wght@0,100..900;1,100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "tertiary": "#f7bd4d",
+              "on-tertiary-container": "#452f00",
+              "error": "#ffb4ab",
+              "outline-variant": "#504536",
+              "primary-container": "#c8922a",
+              "on-tertiary-fixed": "#271900",
+              "on-primary-container": "#462f00",
+              "surface-tint": "#f8bc51",
+              "secondary": "#d1c5b2",
+              "tertiary-fixed": "#ffdea9",
+              "surface-bright": "#39393c",
+              "on-secondary-container": "#c0b3a1",
+              "on-primary-fixed": "#281900",
+              "on-background": "#e4e1e6",
+              "surface-container-lowest": "#0e0e11",
+              "surface-container-highest": "#353438",
+              "on-primary": "#422c00",
+              "on-tertiary-fixed-variant": "#5e4100",
+              "surface-variant": "#353438",
+              "on-error-container": "#ffdad6",
+              "secondary-fixed": "#eee1cd",
+              "surface-container-high": "#2a2a2d",
+              "on-surface": "#e4e1e6",
+              "surface-container-low": "#1b1b1e",
+              "error-container": "#93000a",
+              "inverse-on-surface": "#303033",
+              "primary-fixed": "#ffdeab",
+              "tertiary-fixed-dim": "#f7bd4d",
+              "primary": "#f8bc51",
+              "tertiary-container": "#c79224",
+              "inverse-primary": "#7e5700",
+              "on-secondary": "#372f22",
+              "surface-container": "#1f1f22",
+              "on-error": "#690005",
+              "inverse-surface": "#e4e1e6",
+              "surface": "#131316",
+              "on-surface-variant": "#d4c4b0",
+              "on-primary-fixed-variant": "#5f4100",
+              "primary-fixed-dim": "#f8bc51",
+              "secondary-container": "#4e4637",
+              "on-secondary-fixed": "#211b0f",
+              "background": "#131316",
+              "on-secondary-fixed-variant": "#4e4637",
+              "outline": "#9c8f7c",
+              "on-tertiary": "#422c00",
+              "surface-dim": "#131316",
+              "secondary-fixed-dim": "#d1c5b2"
+            },
+            fontFamily: {
+              "headline": ["Cinzel Decorative", "serif"],
+              "body": ["Crimson Pro", "serif"],
+              "label": ["Cinzel", "serif"],
+              "cinzel": ["Cinzel", "serif"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #0d0d0f;
+            color: #e8e0d0;
+            font-family: 'Crimson Pro', serif;
+        }
+        .header-anchor {
+            font-family: 'Cinzel Decorative', serif;
+            letter-spacing: 0.2em;
+        }
+        .ui-element {
+            font-family: 'Cinzel', serif;
+        }
+        .cinzel-font {
+            font-family: 'Cinzel', serif;
+        }
+    </style>
+</head>
+<body class="bg-[#0d0d0f]">
+<!-- TopNavBar -->
+<nav class="flex justify-between items-center px-8 py-4 w-full z-50 docked full-width top-0 sticky bg-[#0a0a0c] border-b border-[#c8922a]/30">
+<div class="text-xl font-bold tracking-widest text-[#c8922a] font-cinzel">
+            JERO &amp; VONN'S ROYAL CHAMBERS
+        </div>
+<div class="hidden md:flex space-x-8 items-center ui-element">
+<a class="text-[#e8e0d0] hover:text-[#e0a83a] transition-all duration-300" href="#">Home</a>
+<a class="text-[#e8e0d0] hover:text-[#e0a83a] transition-all duration-300" href="#">Company's Profile</a>
+<a class="text-[#c8922a] border-b border-[#c8922a] pb-1 font-bold" href="#">Reservation</a>
+<a class="text-[#e8e0d0] hover:text-[#e0a83a] transition-all duration-300" href="#">Contacts</a>
+</div>
+<div class="md:hidden">
+<span class="material-symbols-outlined text-[#c8922a]">menu</span>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="min-h-screen flex flex-col items-center pt-16 pb-24 px-4 relative overflow-hidden">
+<!-- Atmospheric Background Element -->
+<div class="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none grayscale" data-alt="cinematic interior of a grand medieval gothic hall with high stone ceilings and amber candlelight flickering in the shadows" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuA3vQ2MnfM431FVAgh-a-pI3OHhyKeJs5O1c27axnAa0MgPx0m3xStwzgZPATZFsrDufV6YSBUVm4DZKPdAZD-5ubSJAcBxFfKOSa-6BG5_rK4VvdTZYtz0yGFrt-Rn-PCp-51TUkdosHLPRsMnxu2aIVxxnTLe5IhlJb_wy469m3TxbDrnFGJZnlUYC-HOf46dqfdaM6--XUQJyipyzBi7V26SvzHVhWtjR4oR05YLATBu6EI1tl1EGwoCsKRyY3cjzJvGZDbZo3E'); background-size: cover; background-position: center;">
+</div>
+<!-- Royal Ledger Header -->
+<div class="relative z-10 mb-12 text-center">
+<h1 class="header-anchor text-4xl md:text-6xl text-[#c8922a] font-black uppercase mb-2">ROYAL LEDGER</h1>
+<div class="h-1 w-32 bg-[#c8922a] mx-auto shadow-[0_0_15px_rgba(200,146,42,0.5)]"></div>
+<p class="ui-element mt-4 text-[#9a8f7e] tracking-widest text-sm">SUMMARY OF SOJOURN &amp; TRIBUTE</p>
+</div>
+<!-- Ledger Card -->
+<div class="relative z-10 w-full max-w-5xl bg-[#1e1e24] border border-[#c8922a]/40 shadow-2xl rounded-[4px] overflow-hidden">
+<!-- Subtle Gold Grain Overlay -->
+<div class="absolute inset-0 opacity-[0.03] pointer-events-none" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuASm2MrlpGbT3sYPP5FTNJouaAota_yj2PkISF_7LFBIFn4sQqTusnXxjlTF2t7soa-8QlgmDHciuCz83hensORlQHYIbCHuBlTX154STC-kmH0lUYXlJx1I6yqXYZHlTFRwyu5CCc1JZVd-I6lVOPhbL8p2oPXbqj6aPp70axiJjICIMiQ5jSwURRC_pzUMbmgjR9KUAfLGYdoGk7pkEfirYelLd2bUBnKgxvoAUFeSO-Puu-b1Y6T6N-aDSejzBH9Ocx-I7fzBgA');"></div>
+<div class="grid grid-cols-1 lg:grid-cols-12 relative z-20">
+<!-- Left Column: Guest Info -->
+<div class="lg:col-span-7 p-8 md:p-12 border-b lg:border-b-0 lg:border-r border-white/5">
+<div class="flex items-center gap-4 mb-8">
+<div class="w-12 h-12 border border-[#c8922a]/30 flex items-center justify-center rounded-[2px] bg-[#0d0d0f]">
+<span class="material-symbols-outlined text-[#c8922a]" style="font-variation-settings: 'FILL' 1;">history_edu</span>
+</div>
+<h2 class="ui-element text-xl text-[#e8e0d0] tracking-wider uppercase">Guest Credentials</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-y-10 gap-x-12">
+<div class="space-y-1">
+<span class="text-[#4a4540] text-xs uppercase font-bold tracking-widest block">Patron Name</span>
+<span class="text-xl text-[#e8e0d0] font-light">Lord Julian Vane</span>
+</div>
+<div class="space-y-1">
+<span class="text-[#4a4540] text-xs uppercase font-bold tracking-widest block">Communication</span>
+<span class="text-xl text-[#e8e0d0] font-light">j.vane@crown-mail.com</span>
+</div>
+<div class="space-y-1">
+<span class="text-[#4a4540] text-xs uppercase font-bold tracking-widest block">Arrival &amp; Departure</span>
+<span class="text-lg text-[#e8e0d0] font-light italic">12 Oct — 15 Oct, 2024</span>
+</div>
+<div class="space-y-1">
+<span class="text-[#4a4540] text-xs uppercase font-bold tracking-widest block">Designated Chamber</span>
+<span class="text-lg text-[#c8922a] cinzel-font font-bold">THE OBSIDIAN TOWER</span>
+</div>
+</div>
+<div class="mt-16 pt-8 border-t border-white/5">
+<p class="text-[#9a8f7e] italic text-sm leading-relaxed">
+                            "May your memories of the Royal Chambers be as enduring as the stone they are carved from. Your tribute ensures the continued majesty of these halls."
+                        </p>
+</div>
+</div>
+<!-- Right Column: Billing Inset -->
+<div class="lg:col-span-5 p-8 md:p-12 bg-[#151518]/50 flex flex-col justify-between">
+<div>
+<div class="flex justify-between items-center mb-10">
+<h2 class="ui-element text-xl text-[#e8e0d0] tracking-wider uppercase">Statement</h2>
+<span class="text-[#4a4540] text-xs font-mono">INV-8829-24</span>
+</div>
+<div class="space-y-6">
+<div class="flex justify-between items-center border-b border-white/5 pb-4">
+<span class="text-[#9a8f7e] ui-element text-sm uppercase">Nights Stayed</span>
+<span class="text-[#e8e0d0] text-lg">3 Nights</span>
+</div>
+<div class="flex justify-between items-center border-b border-white/5 pb-4">
+<span class="text-[#9a8f7e] ui-element text-sm uppercase">Gold Sub-Total</span>
+<span class="text-[#e8e0d0] text-lg">₱ 18,450.00</span>
+</div>
+<div class="flex justify-between items-center border-b border-white/5 pb-4">
+<span class="text-[#9a8f7e] ui-element text-sm uppercase">Favour / Surcharge</span>
+<span class="text-[#e8e0d0] text-lg">₱ 1,200.00</span>
+</div>
+</div>
+</div>
+<div class="mt-12 bg-[#0d0d0f] p-6 border border-[#c8922a]/20">
+<span class="text-[#4a4540] text-[10px] uppercase font-bold tracking-[0.3em] block mb-2 text-center">Final Settlement</span>
+<div class="flex justify-between items-baseline">
+<span class="ui-element text-[#9a8f7e] text-xs uppercase">Total Tribute Due</span>
+<span class="header-anchor text-3xl text-[#c8922a] font-black">₱ 19,650.00</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="relative z-10 mt-12 flex flex-col sm:flex-row gap-6">
+<a class="px-10 py-4 border border-[#c8922a] text-[#c8922a] ui-element text-sm tracking-widest uppercase hover:bg-[#c8922a] hover:text-[#0d0d0f] transition-all duration-300 active:scale-95 text-center" href="#">
+                Review Entry
+            </a>
+<a class="px-10 py-4 border border-[#c8922a] text-[#c8922a] ui-element text-sm tracking-widest uppercase hover:bg-[#c8922a] hover:text-[#0d0d0f] transition-all duration-300 active:scale-95 text-center" href="#">
+                Return to Home
+            </a>
+</div>
+</main>
+<!-- Footer -->
+<footer class="flex flex-col md:flex-row justify-between items-center px-12 py-10 w-full bg-[#0d0d0f] border-t border-white/5">
+<div class="text-lg font-cinzel text-[#c8922a] mb-6 md:mb-0">
+            JERO &amp; VONN'S ROYAL CHAMBERS
+        </div>
+<div class="flex flex-col items-center md:items-end space-y-4">
+<div class="flex space-x-6 ui-element text-sm">
+<a class="text-[#9a8f7e] hover:text-[#c8922a] transition-colors" href="#">Privacy Policy</a>
+<a class="text-[#9a8f7e] hover:text-[#c8922a] transition-colors" href="#">Terms of Service</a>
+<a class="text-[#9a8f7e] hover:text-[#c8922a] transition-colors" href="#">Cookie Policy</a>
+</div>
+<div class="text-[#9a8f7e] text-xs italic font-body">
+                © 2024 Jero &amp; Vonn's Royal Chambers. All rights reserved.
+            </div>
+</div>
+</footer>
+</body></html>

@@ -1,0 +1,1281 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Work+Sans:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cinzel+Decorative:wght@400;700;900&family=Crimson+Pro:ital,wght@0,200..900;1,200..900&display=swap');
+
+:root {
+    --navy: #1a2744;
+    --gold: #c9a84c;
+    --cream: #f6f2e7;
+    --white: #ffffff;
+    --ink: #1f2430;
+    --muted: #5c6473;
+    --surface: #fbf9f3;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Crimson Pro', serif;
+    color: #e8e0d0;
+    background:
+        radial-gradient(circle at 12% 16%, rgba(200, 146, 42, 0.14), transparent 36%),
+        radial-gradient(circle at 82% 11%, rgba(255, 222, 171, 0.08), transparent 38%),
+        linear-gradient(180deg, #0d0d0f 0%, #111114 100%);
+    min-height: 100vh;
+}
+
+.royal-container {
+    width: min(1100px, 92vw);
+    margin: 0 auto;
+}
+
+.royal-topbar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: #0a0a0c;
+    border-bottom: 1px solid rgba(200, 146, 42, 0.35);
+}
+
+.royal-topbar-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.8rem;
+    min-height: 76px;
+}
+
+.royal-brand {
+    color: #c8922a;
+    text-decoration: none;
+    font-family: 'Cinzel Decorative', serif;
+    font-size: clamp(1rem, 1.7vw, 1.22rem);
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+.royal-nav {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.royal-nav a {
+    color: #e8e0d0;
+    text-decoration: none;
+    font-family: 'Cinzel', serif;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 0.78rem;
+    padding-bottom: 0.2rem;
+    border-bottom: 1px solid transparent;
+    transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.royal-nav a:hover {
+    color: #e0a83a;
+}
+
+.royal-nav a.nav-active {
+    color: #c8922a;
+    border-bottom-color: #c8922a;
+}
+
+.royal-mobile-menu {
+    display: none;
+    border: 0;
+    background: transparent;
+    color: #c8922a;
+    font-size: 1.35rem;
+    line-height: 1;
+    cursor: pointer;
+}
+
+main {
+    padding: 0 0 2.5rem;
+}
+
+.hero {
+    position: relative;
+    margin-top: 1rem;
+    background:
+        linear-gradient(130deg, rgba(26, 39, 68, 0.9), rgba(26, 39, 68, 0.55)),
+        url('https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1600&q=80') center/cover;
+    border-radius: 18px;
+    min-height: 62vh;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    box-shadow: 0 20px 48px rgba(26, 39, 68, 0.25);
+}
+
+.hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 20%, rgba(0, 0, 0, 0.38) 100%);
+}
+
+.hero-content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    color: var(--white);
+    padding: 2rem;
+    animation: riseIn 0.9s ease;
+}
+
+.hero h1,
+.page-title,
+.section-title,
+.receipt-title {
+    font-family: 'Playfair Display', serif;
+}
+
+.hero h1 {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    margin: 0 0 0.8rem;
+}
+
+.hero p {
+    max-width: 620px;
+    margin: 0 auto 1.2rem;
+    line-height: 1.6;
+}
+
+.btn,
+button,
+input[type='submit'] {
+    display: inline-block;
+    border: 0;
+    border-radius: 8px;
+    background: var(--gold);
+    color: #222;
+    padding: 0.62rem 1.05rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: filter 0.2s ease, transform 0.2s ease;
+}
+
+.btn:hover,
+button:hover,
+input[type='submit']:hover {
+    filter: brightness(1.04);
+    transform: translateY(-1px);
+}
+
+.page-card,
+.content-card,
+.form-card,
+.receipt-card {
+    background: #16161a;
+    border: 1px solid rgba(200, 146, 42, 0.16);
+    border-radius: 14px;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
+    padding: 1.25rem;
+}
+
+.page-title {
+    margin: 0.3rem 0 1rem;
+    font-size: clamp(1.7rem, 3.2vw, 2.4rem);
+    color: #c8922a;
+}
+
+.lead {
+    color: #9a8f7e;
+    line-height: 1.6;
+}
+
+p,
+li,
+label,
+legend,
+th,
+td {
+    color: #e4d8c4;
+}
+
+.grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+.field-row {
+    display: grid;
+    gap: 0.35rem;
+    margin-bottom: 0.9rem;
+}
+
+label {
+    font-weight: 600;
+}
+
+input[type='text'],
+input[type='date'],
+select {
+    width: 100%;
+    border: 1px solid rgba(200, 146, 42, 0.35);
+    border-radius: 8px;
+    padding: 0.56rem 0.64rem;
+    background: #0f0f12;
+    color: #e8e0d0;
+    font-family: inherit;
+}
+
+.date-group {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr auto 1fr;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.choices {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.choice-block {
+    border: 1px dashed rgba(200, 146, 42, 0.32);
+    border-radius: 10px;
+    padding: 0.8rem;
+    flex: 1 1 180px;
+    min-width: 160px;
+}
+
+.choice-block p {
+    margin-top: 0;
+    font-weight: 700;
+    color: #c8922a;
+}
+
+.choice-item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-bottom: 0.42rem;
+    font-weight: 400;
+}
+
+.actions {
+    display: flex;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+}
+
+.error-box {
+    background: #fff1f1;
+    border: 1px solid #d95a5a;
+    color: #7e1f1f;
+    border-radius: 10px;
+    padding: 0.8rem;
+    margin-bottom: 1rem;
+}
+
+.success-box {
+    background: #e9f8ee;
+    border: 1px solid #4ea46a;
+    color: #1e5d34;
+    border-radius: 10px;
+    padding: 0.8rem;
+    margin-bottom: 1rem;
+}
+
+.meta-line {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.8rem;
+    color: #a99c89;
+}
+
+.receipt-title {
+    margin: 0.2rem 0 1rem;
+    color: #c8922a;
+}
+
+.receipt-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.receipt-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.receipt-table th,
+.receipt-table td {
+    border-bottom: 1px solid rgba(200, 146, 42, 0.22);
+    text-align: left;
+    padding: 0.55rem 0.2rem;
+}
+
+.receipt-table th:last-child,
+.receipt-table td:last-child {
+    text-align: right;
+}
+
+.receipt-table tfoot th,
+.receipt-table tfoot td {
+    font-size: 1.08rem;
+    color: #c8922a;
+}
+
+.footer,
+.royal-footer {
+    background: #0d0d0f;
+    color: #c8922a;
+    text-align: center;
+    padding: 2.5rem 1rem;
+    margin-top: 1.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.royal-footer-brand {
+    font-family: 'Cinzel', serif;
+    color: #c8922a;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-size: 1.16rem;
+    margin-bottom: 0.9rem;
+}
+
+.royal-footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 1.6rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.9rem;
+}
+
+.royal-footer-links a {
+    color: #9a8f7e;
+    text-decoration: underline;
+    transition: color 0.2s ease;
+}
+
+.royal-footer-links a:hover {
+    color: #c8922a;
+}
+
+.royal-footer-copy {
+    color: rgba(154, 143, 126, 0.74);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.64rem;
+}
+
+.map-wrap iframe {
+    width: 100%;
+    min-height: 260px;
+    border: 0;
+    border-radius: 10px;
+}
+
+.material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+.dropcap::first-letter {
+    float: left;
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 4rem;
+    line-height: 0.8;
+    padding-top: 0.5rem;
+    padding-right: 0.75rem;
+    color: #c8922a;
+}
+
+.contacts-hero {
+    position: relative;
+    min-height: 405px;
+    margin-top: 0.5rem;
+    display: grid;
+    place-items: center;
+    text-align: center;
+    overflow: hidden;
+    background:
+        linear-gradient(180deg, rgba(13, 13, 15, 0.74), rgba(13, 13, 15, 0.88)),
+        url('https://lh3.googleusercontent.com/aida-public/AB6AXuAaZD_jYjwM36zJVw5WToN2GsS15t21pChQOnuV5Uqgy7TbIz-4l1dLERU1dPQ9BM1_ZyVQ9RTlAxTYrz6rZL7j3WkYbR84IhxxJqLjonYwlnULnOp7za1ztLkSuiq12J_k48_-yDb9zWbb1VrufPlhI07a07wXjSUyIB6okcguoBmgGpFAUxjaOQC7X6sibIJ91ey1OvYioZvuhlPGF77vfhxagZCM6h4AWNCdgz4dzO_xxmbUGm_SRnSLFI7WkrjGAGaFQKiygvQ') center/cover;
+}
+
+.contacts-hero-content {
+    position: relative;
+    z-index: 1;
+    padding: 2rem 1rem;
+    animation: riseIn 0.8s ease;
+}
+
+.contacts-hero-content h1 {
+    margin: 0 0 0.8rem;
+    font-family: 'Cinzel Decorative', serif;
+    text-transform: uppercase;
+    letter-spacing: 0.24em;
+    color: #c8922a;
+    font-size: clamp(2rem, 5vw, 3.8rem);
+}
+
+.contacts-hero-content p {
+    margin: 0;
+    color: #b4a897;
+    font-style: italic;
+    font-size: clamp(1.1rem, 2vw, 1.5rem);
+}
+
+.contacts-hero-fade {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 100px;
+    background: linear-gradient(180deg, rgba(13, 13, 15, 0) 0%, #0d0d0f 100%);
+}
+
+.contacts-main {
+    padding: 3.2rem 0 3.8rem;
+}
+
+.contacts-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 2.4rem;
+}
+
+.contacts-left,
+.contacts-right {
+    min-width: 0;
+}
+
+.contacts-heading {
+    margin: 0 0 1.35rem;
+    font-family: 'Cinzel Decorative', serif;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: #c8922a;
+    font-size: clamp(1.3rem, 2.4vw, 1.95rem);
+}
+
+.contacts-heading-center {
+    text-align: center;
+}
+
+.contacts-info-list {
+    display: grid;
+    gap: 1.05rem;
+}
+
+.contacts-info-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+}
+
+.contacts-info-item .material-symbols-outlined {
+    color: #c8922a;
+    font-size: 1.35rem;
+    line-height: 1.4;
+}
+
+.contacts-label {
+    margin: 0 0 0.2rem;
+    color: #9a8f7e;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: 0.72rem;
+    font-family: 'Cinzel', serif;
+}
+
+.contacts-value {
+    margin: 0;
+    color: #e8e0d0;
+    font-size: 1.08rem;
+}
+
+.contacts-map-card {
+    margin-top: 1.8rem;
+    border: 1px solid rgba(200, 146, 42, 0.24);
+    background: #151518;
+    padding: 0.95rem;
+}
+
+.contacts-map-title {
+    margin: 0 0 0.7rem;
+    color: #c8922a;
+    text-transform: uppercase;
+    letter-spacing: 0.17em;
+    font-family: 'Cinzel', serif;
+    font-size: 0.72rem;
+    text-align: center;
+}
+
+.contacts-map-wrap iframe {
+    width: 100%;
+    border: 0;
+    aspect-ratio: 16 / 9;
+    min-height: 240px;
+    filter: grayscale(0.22);
+}
+
+.contacts-form-card {
+    position: relative;
+    background: #151518;
+    border: 1px solid rgba(200, 146, 42, 0.3);
+    padding: 1.5rem;
+    box-shadow: 0 16px 35px rgba(0, 0, 0, 0.32);
+    overflow: hidden;
+}
+
+.contacts-form-card::after {
+    content: '';
+    position: absolute;
+    right: -45px;
+    top: -45px;
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    background: rgba(200, 146, 42, 0.08);
+    filter: blur(24px);
+}
+
+.contacts-form {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    gap: 1rem;
+}
+
+.contacts-field-row {
+    display: grid;
+    gap: 0.38rem;
+}
+
+.contacts-field-row label {
+    color: #9a8f7e;
+    font-family: 'Cinzel', serif;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    font-size: 0.72rem;
+}
+
+.contacts-field-row input,
+.contacts-field-row textarea {
+    width: 100%;
+    border: 1px solid rgba(200, 146, 42, 0.24);
+    background: #0d0d0f;
+    color: #e8e0d0;
+    border-radius: 3px;
+    padding: 0.72rem 0.8rem;
+    font-family: 'Crimson Pro', serif;
+    font-size: 1rem;
+}
+
+.contacts-field-row textarea {
+    resize: vertical;
+    min-height: 130px;
+}
+
+.contacts-field-row input:focus,
+.contacts-field-row textarea:focus {
+    outline: 1px solid #c8922a;
+    border-color: #c8922a;
+}
+
+.contacts-submit {
+    width: 100%;
+    border-radius: 2px;
+    padding: 0.9rem 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    font-family: 'Cinzel', serif;
+    background: #c8922a;
+    color: #0d0d0f;
+}
+
+.contacts-quote {
+    margin: 1.15rem 0 0;
+    text-align: center;
+    color: #9a8f7e;
+    font-style: italic;
+    font-size: 1.1rem;
+}
+
+.royal-hero {
+    position: relative;
+    min-height: calc(100vh - 72px);
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    background:
+        linear-gradient(180deg, rgba(13, 13, 15, 0.15) 0%, rgba(13, 13, 15, 0.8) 70%, #0d0d0f 100%),
+        url('https://lh3.googleusercontent.com/aida-public/AB6AXuC-9-UySW4lzzx6VcflKzwM4YJCUCbqC7UFCnclleCkBuLRRELw_G_LMX5YnT6h1fL_o6GvbZLctBsCxcEGEbGgPlmw_RxGD7wvrncmBFwAoPheC5e3s7o01svAmrjqcmkz0Q8x2CgiGPYNPE7mZmj_9JezIDweUnmlZuTxzyE9AAFZmhyE7eZvZACFcq2lVhwwXYmbOqmYdzwTwq-5mG8s1MiOiIZ8mGlHDoqf2mZ4g-DWKxrNjS3BrtXL31rVEHmcsCzUkZ47BcY') center/cover;
+}
+
+.royal-hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(13, 13, 15, 0.1) 0%, rgba(13, 13, 15, 0.86) 78%, #0d0d0f 100%);
+}
+
+.royal-hero-content {
+    position: relative;
+    z-index: 1;
+    color: #e8e0d0;
+    text-align: center;
+    padding: 2.5rem 1rem 4rem;
+    animation: riseIn 0.8s ease;
+}
+
+.royal-kicker {
+    margin: 0;
+    font-family: 'Cinzel', serif;
+    color: #c8922a;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    font-size: 0.72rem;
+}
+
+.royal-hero h1 {
+    margin: 0.85rem 0 0.55rem;
+    font-family: 'Cinzel Decorative', serif;
+    font-size: clamp(2rem, 5.7vw, 4.65rem);
+    font-weight: 700;
+    line-height: 1.12;
+    color: #e8e0d0;
+}
+
+.royal-tagline {
+    margin: 0;
+    font-family: 'Crimson Pro', serif;
+    font-size: clamp(1.1rem, 2.4vw, 1.8rem);
+    font-style: italic;
+    color: #b4a897;
+}
+
+.royal-btn {
+    margin-top: 1.6rem;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.13em;
+    font-family: 'Cinzel', serif;
+    background: #c8922a;
+    color: #121212;
+    border: 1px solid rgba(200, 146, 42, 0.7);
+}
+
+.royal-section {
+    padding: 5rem 0;
+    background: #0d0d0f;
+}
+
+.royal-section-alt {
+    background: #0a0a0c;
+}
+
+.royal-heading-wrap {
+    text-align: center;
+    margin-bottom: 2.6rem;
+}
+
+.royal-heading {
+    margin: 0;
+    color: #c8922a;
+    font-family: 'Cinzel Decorative', serif;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: clamp(1.7rem, 3vw, 2.25rem);
+}
+
+.royal-subhead {
+    margin: 0.45rem 0 0;
+    color: #9a8f7e;
+    font-size: 1.05rem;
+    font-family: 'Crimson Pro', serif;
+    font-style: italic;
+}
+
+.royal-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.15rem;
+}
+
+.royal-card {
+    background: #151518;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: transform 0.35s ease, border-color 0.35s ease;
+    overflow: hidden;
+}
+
+.royal-card:hover {
+    transform: translateY(-7px);
+    border-color: rgba(200, 146, 42, 0.45);
+}
+
+.royal-image-wrap {
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+}
+
+.royal-image-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(0.35);
+    transition: filter 0.5s ease, transform 0.5s ease;
+}
+
+.royal-card:hover .royal-image-wrap img {
+    filter: grayscale(0);
+    transform: scale(1.03);
+}
+
+.royal-card-body {
+    padding: 1.35rem;
+}
+
+.royal-card-body h3 {
+    margin: 0 0 0.35rem;
+    color: #e8e0d0;
+    font-family: 'Cinzel', serif;
+    font-size: 1.28rem;
+}
+
+.royal-card-body p {
+    margin: 0;
+    color: #9a8f7e;
+    font-family: 'Crimson Pro', serif;
+    line-height: 1.6;
+}
+
+.royal-price {
+    margin-top: 1rem;
+    color: #c8922a;
+    font-family: 'Cinzel', serif;
+    font-size: 1.38rem;
+}
+
+.royal-price span {
+    color: rgba(154, 143, 126, 0.7);
+    font-size: 0.72rem;
+    letter-spacing: 0.16em;
+}
+
+.royal-table-shell {
+    max-width: 900px;
+}
+
+.royal-table-wrap {
+    border: 1px solid rgba(200, 146, 42, 0.3);
+    overflow-x: auto;
+}
+
+.royal-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 550px;
+}
+
+.royal-table th {
+    background: #c8922a;
+    color: #0d0d0f;
+    font-family: 'Cinzel', serif;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 1.05rem;
+    text-align: left;
+}
+
+.royal-table td {
+    padding: 1.05rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    font-family: 'Crimson Pro', serif;
+    color: #e8e0d0;
+    font-size: 1.1rem;
+}
+
+.royal-table tbody tr:nth-child(odd) {
+    background: #151518;
+}
+
+.royal-table tbody tr:nth-child(even) {
+    background: #1e1e24;
+}
+
+.royal-table tbody tr:hover {
+    background: #26262b;
+}
+
+.royal-table td:last-child {
+    color: #c8922a;
+}
+
+.align-right {
+    text-align: right;
+}
+
+.admin-hero {
+    min-height: 30vh;
+    background:
+        linear-gradient(180deg, rgba(13, 13, 15, 0.25) 0%, rgba(13, 13, 15, 0.88) 80%, #0d0d0f 100%),
+        url('https://images.unsplash.com/photo-1563911302283-d2bc129e7570?auto=format&fit=crop&w=1400&q=80') center/cover;
+}
+
+.admin-hero .royal-hero-content {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+
+.admin-summary {
+    margin: 1.2rem auto 0;
+    width: fit-content;
+    padding: 0.35rem 0.8rem;
+    border: 1px solid rgba(200, 146, 42, 0.45);
+    border-radius: 999px;
+    font-family: 'Cinzel', serif;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #c8922a;
+    font-size: 0.7rem;
+    background: rgba(0, 0, 0, 0.35);
+}
+
+.admin-layout {
+    display: grid;
+    gap: 1.2rem;
+    width: min(1700px, 96vw);
+    max-width: 1700px;
+    margin: 0 auto;
+}
+
+.admin-main-section {
+    padding: 4rem 0;
+    overflow-x: clip;
+}
+
+.admin-layout > * {
+    width: 100%;
+}
+
+.admin-form-card {
+    padding: 1.3rem;
+}
+
+.admin-heading-wrap {
+    text-align: center;
+    margin-bottom: 1.25rem;
+}
+
+.admin-choices {
+    margin-top: 0.6rem;
+}
+
+.admin-choice-block {
+    min-width: 210px;
+}
+
+.admin-choice-block legend {
+    color: #c8922a;
+    font-family: 'Cinzel', serif;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 0.72rem;
+    margin-bottom: 0.45rem;
+}
+
+.admin-actions {
+    margin-top: 1.2rem;
+}
+
+.admin-cancel {
+    background: transparent;
+    border: 1px solid rgba(200, 146, 42, 0.45);
+    color: #e8e0d0;
+}
+
+.admin-table-section {
+    margin-top: 0.5rem;
+    padding: 1.25rem 1.1rem;
+}
+
+.admin-table-card {
+    border: 1px solid rgba(200, 146, 42, 0.24);
+}
+
+.admin-table-card .royal-table-wrap {
+    border-radius: 10px;
+    max-width: 100%;
+}
+
+.admin-table-wrap {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.admin-empty-state p {
+    margin: 0;
+    color: #9a8f7e;
+}
+
+.admin-table {
+    min-width: 1460px;
+}
+
+.admin-table th,
+.admin-table td {
+    white-space: nowrap;
+}
+
+.admin-row-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+}
+
+.admin-row-actions form {
+    margin: 0;
+}
+
+.admin-edit-link {
+    padding-top: 0.45rem;
+    padding-bottom: 0.45rem;
+}
+
+.royal-promo-wrap {
+    max-width: 860px;
+}
+
+.royal-promo-card {
+    position: relative;
+    background: #1e1e24;
+    border: 2px solid rgba(200, 146, 42, 0.35);
+    text-align: center;
+    padding: 2.1rem 1.4rem;
+    overflow: hidden;
+}
+
+.royal-corner {
+    position: absolute;
+    width: 32px;
+    height: 32px;
+    border-color: #c8922a;
+}
+
+.royal-corner.top-left {
+    top: 0;
+    left: 0;
+    border-top: 2px solid;
+    border-left: 2px solid;
+}
+
+.royal-corner.top-right {
+    top: 0;
+    right: 0;
+    border-top: 2px solid;
+    border-right: 2px solid;
+}
+
+.royal-corner.bottom-left {
+    bottom: 0;
+    left: 0;
+    border-bottom: 2px solid;
+    border-left: 2px solid;
+}
+
+.royal-corner.bottom-right {
+    bottom: 0;
+    right: 0;
+    border-bottom: 2px solid;
+    border-right: 2px solid;
+}
+
+.royal-icon {
+    margin: 0 0 0.4rem;
+    color: #c8922a;
+    font-size: 2.2rem;
+}
+
+.royal-promo-title {
+    font-size: clamp(1.35rem, 2.5vw, 2rem);
+    letter-spacing: 0.13em;
+}
+
+.royal-discount-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.8rem;
+    margin: 1.3rem 0;
+}
+
+.royal-discount-value {
+    margin: 0;
+    color: #e8e0d0;
+    font-family: 'Cinzel', serif;
+    font-size: clamp(1.4rem, 3vw, 2.1rem);
+}
+
+.royal-discount-label {
+    margin: 0.2rem 0 0;
+    color: #9a8f7e;
+    font-family: 'Cinzel', serif;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.72rem;
+}
+
+.royal-divider {
+    width: 1px;
+    height: 56px;
+    background: rgba(200, 146, 42, 0.25);
+}
+
+.royal-note {
+    margin: 0;
+    max-width: 640px;
+    margin-left: auto;
+    margin-right: auto;
+    color: #9a8f7e;
+    font-family: 'Crimson Pro', serif;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    font-style: italic;
+}
+
+.reservation-page {
+    background-color: #0d0d0f;
+    color: #e8e0d0;
+    font-family: 'Crimson Pro', serif;
+}
+
+.royal-hero-gradient {
+    background: linear-gradient(to bottom, rgba(13, 13, 15, 0.75), #0d0d0f);
+}
+
+.royal-input,
+.royal-select {
+    background-color: #131316 !important;
+    border: 1px solid rgba(200, 146, 42, 0.22) !important;
+    color: #e8e0d0 !important;
+}
+
+.royal-input:focus,
+.royal-select:focus {
+    border-color: #c8922a !important;
+    outline: none;
+    box-shadow: 0 0 0 1px #c8922a;
+}
+
+.reservation-page .error-box {
+    background-color: rgba(147, 0, 10, 0.25);
+    border: 1px solid rgba(255, 180, 171, 0.6);
+    color: #ffdad6;
+    padding: 0.85rem 1rem;
+    font-family: 'Crimson Pro', serif;
+}
+
+.royal-date-card {
+    background: linear-gradient(145deg, rgba(28, 28, 32, 0.92), rgba(19, 19, 22, 0.92));
+    border: 1px solid rgba(200, 146, 42, 0.28);
+    border-radius: 10px;
+    padding: 0.95rem;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+.royal-date-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #9a8f7e;
+    font-family: 'Cinzel', serif;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-size: 0.72rem;
+}
+
+.royal-date-helper {
+    margin: 0.55rem 0 0;
+    color: #9a8f7e;
+    font-size: 0.86rem;
+    font-style: italic;
+}
+
+.royal-stay-chip {
+    border: 1px solid rgba(200, 146, 42, 0.24);
+    background: rgba(200, 146, 42, 0.1);
+    color: #f1d297;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.46rem 0.95rem;
+    font-family: 'Cinzel', serif;
+    font-size: 0.74rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.reservation-page input[type='date']::-webkit-calendar-picker-indicator {
+    filter: invert(85%) sepia(23%) saturate(584%) hue-rotate(340deg) brightness(92%) contrast(91%);
+    cursor: pointer;
+}
+
+@media (max-width: 980px) {
+    .royal-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 700px) {
+    .royal-section {
+        padding: 3.6rem 0;
+    }
+
+    .admin-main-section {
+        padding: 3rem 0;
+    }
+
+    .royal-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .royal-discount-row {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .royal-divider {
+        width: 100%;
+        height: 1px;
+    }
+
+    .royal-promo-card {
+        padding: 1.65rem 1.05rem;
+    }
+
+    .contacts-hero {
+        min-height: 320px;
+    }
+
+    .contacts-hero-content h1 {
+        letter-spacing: 0.14em;
+    }
+
+    .admin-row-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .admin-row-actions .btn,
+    .admin-row-actions button {
+        width: 100%;
+        text-align: center;
+    }
+
+    .admin-table-section {
+        padding: 0.85rem;
+    }
+
+    .admin-table {
+        min-width: 760px;
+    }
+
+    .admin-table th,
+    .admin-table td {
+        padding: 0.72rem;
+        font-size: 0.95rem;
+    }
+}
+
+@keyframes riseIn {
+    from {
+        transform: translateY(18px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@media (max-width: 860px) {
+    .royal-topbar-inner {
+        min-height: auto;
+        padding: 0.95rem 0;
+    }
+
+    .royal-nav {
+        display: none;
+    }
+
+    .royal-mobile-menu {
+        display: inline-flex;
+    }
+
+    .grid-2,
+    .receipt-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .date-group {
+        grid-template-columns: 1fr;
+        gap: 0.45rem;
+    }
+
+    .contacts-grid {
+        grid-template-columns: 1fr;
+        gap: 1.6rem;
+    }
+
+    .contacts-main {
+        padding-top: 2.2rem;
+    }
+
+    .contacts-form-card {
+        padding: 1.2rem;
+    }
+
+    .admin-summary {
+        width: auto;
+        max-width: 92vw;
+        line-height: 1.6;
+        padding: 0.4rem 0.7rem;
+    }
+
+    .admin-table {
+        min-width: 840px;
+    }
+}
+
+@media (max-width: 1080px) {
+    .admin-layout {
+        width: min(1000px, 94vw);
+    }
+
+    .admin-table {
+        min-width: 900px;
+    }
+}
+
+@media (min-width: 1500px) {
+    .admin-table-section {
+        padding: 1.4rem;
+    }
+}
