@@ -4,4 +4,8 @@ dockerfilePath = "Dockerfile"
 
 [deploy]
 startCommand = "apache-port.sh"
-healthcheckPath = "/home.php"
+healthcheckPath = "/healthcheck.php"
+healthcheckTimeout = 20
+
+[env]
+HOTEL_DEMO_SESSION_ONLY = "true"
