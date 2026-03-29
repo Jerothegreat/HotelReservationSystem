@@ -3,5 +3,5 @@ builder = "DOCKERFILE"
 dockerfilePath = "Dockerfile"
 
 [deploy]
-startCommand = "apache2-foreground"
-healthcheckPath = "/"
+startCommand = "apache-port.sh"
+healthcheckPath = "/home.php"
