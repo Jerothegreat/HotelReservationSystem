@@ -3,9 +3,10 @@ builder = "DOCKERFILE"
 dockerfilePath = "Dockerfile"
 
 [deploy]
-startCommand = "apache-port.sh"
+startCommand = "apache2-foreground"
 healthcheckPath = "/healthcheck.php"
-healthcheckTimeout = 20
 
 [env]
 HOTEL_DEMO_SESSION_ONLY = "true"
+PORT = "80"
+RAILWAY_HEALTHCHECK_TIMEOUT_SEC = "120"
