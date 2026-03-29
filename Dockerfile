@@ -1,8 +1,25 @@
 FROM php:8.2-apache
-RUN a2enmod rewrite
+
+# Fix MPM conflict: disable event/worker, keep only prefork (required for mod_php)
+RUN a2dismod mpm_event mpm_worker 2>/dev/null || true \
+ && a2enmod mpm_prefork rewrite
+
+# Apache config: allow .htaccess overrides
+RUN echo '<Directory /var/www/html>\n\
+	Options Indexes FollowSymLinks\n\
+	AllowOverride All\n\
+	Require all granted\n\
+</Directory>' >> /etc/apache2/apache2.conf
+
 WORKDIR /var/www/html
 COPY . .
-RUN chmod +x /var/www/html/apache-port.sh \
-	&& cp /var/www/html/apache-port.sh /usr/local/bin/apache-port.sh
+
+# Copy and wire up the entrypoint that handles Railway's dynamic PORT
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN sed -i 's/\r$//' /usr/local/bin/docker-entrypoint.sh \
+ && chmod +x /usr/local/bin/docker-entrypoint.sh \
+ && chown -R www-data:www-data /var/www/html
+
 EXPOSE 80
-CMD ["apache-port.sh"]
+
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
