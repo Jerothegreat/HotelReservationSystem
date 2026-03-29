@@ -8,6 +8,7 @@ healthcheckPath = "/healthcheck.php"
 [env]
 HOTEL_STORAGE_MODE = "session"
 HOTEL_DEMO_SESSION_ONLY = "true"
+HOTEL_DEMO_COOKIE_MIRROR = "true"
 HOTEL_SESSION_SAVE_PATH = "/tmp/hotel_sessions"
 PORT = "80"
 RAILWAY_HEALTHCHECK_TIMEOUT_SEC = "120"

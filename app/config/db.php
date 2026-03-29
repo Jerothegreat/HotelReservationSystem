@@ -68,6 +68,14 @@ function bootstrapEnv(): void
 
 bootstrapEnv();
 
+function isHttpsRequest(): bool
+{
+    $httpsFlag = $_SERVER['HTTPS'] ?? '';
+    $forwardedProto = strtolower((string)($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? ''));
+
+    return ($httpsFlag !== '' && strtolower((string)$httpsFlag) !== 'off') || $forwardedProto === 'https';
+}
+
 function configureSessionRuntime(): void
 {
     if (session_status() !== PHP_SESSION_NONE) {
@@ -86,10 +94,6 @@ function configureSessionRuntime(): void
         session_save_path($sessionPath);
     }
 
-    $httpsFlag = $_SERVER['HTTPS'] ?? '';
-    $forwardedProto = strtolower((string)($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? ''));
-    $isHttps = ($httpsFlag !== '' && strtolower((string)$httpsFlag) !== 'off') || $forwardedProto === 'https';
-
     @ini_set('session.use_only_cookies', '1');
     @ini_set('session.use_strict_mode', '1');
     @ini_set('session.cookie_httponly', '1');
@@ -98,7 +102,7 @@ function configureSessionRuntime(): void
     session_set_cookie_params([
         'lifetime' => 0,
         'path' => '/',
-        'secure' => $isHttps,
+        'secure' => isHttpsRequest(),
         'httponly' => true,
         'samesite' => 'Lax',
     ]);
@@ -136,6 +140,159 @@ function envBool(string $key, bool $default): bool
     }
 
     return $default;
+}
+
+function getDemoCookieName(): string
+{
+    return envOrDefault('HOTEL_DEMO_COOKIE_NAME', 'hotel_demo_store');
+}
+
+function shouldMirrorDemoCookieStorage(): bool
+{
+    if (!isSessionStorageMode()) {
+        return false;
+    }
+
+    return envBool('HOTEL_DEMO_COOKIE_MIRROR', true);
+}
+
+function normalizeReservationRecordForCookie(array $reservation): ?array
+{
+    $id = (int)($reservation['id'] ?? 0);
+    if ($id < 1) {
+        return null;
+    }
+
+    return [
+        'id' => $id,
+        'customer_name' => (string)($reservation['customer_name'] ?? ''),
+        'contact_number' => (string)($reservation['contact_number'] ?? ''),
+        'from_date' => (string)($reservation['from_date'] ?? ''),
+        'to_date' => (string)($reservation['to_date'] ?? ''),
+        'room_type' => (string)($reservation['room_type'] ?? ''),
+        'room_capacity' => (string)($reservation['room_capacity'] ?? ''),
+        'payment_type' => (string)($reservation['payment_type'] ?? ''),
+        'no_of_days' => (int)($reservation['no_of_days'] ?? 0),
+        'rate_per_day' => (float)($reservation['rate_per_day'] ?? 0),
+        'subtotal' => (float)($reservation['subtotal'] ?? 0),
+        'adjust_label' => (string)($reservation['adjust_label'] ?? ''),
+        'adjust_value' => (float)($reservation['adjust_value'] ?? 0),
+        'total_bill' => (float)($reservation['total_bill'] ?? 0),
+        'reserved_at' => (string)($reservation['reserved_at'] ?? ''),
+        'created_at' => (string)($reservation['created_at'] ?? ''),
+    ];
+}
+
+function hydrateSessionFromDemoCookie(): void
+{
+    if (!shouldMirrorDemoCookieStorage()) {
+        return;
+    }
+
+    $existingReservations = $_SESSION['hotel_demo']['reservations'] ?? [];
+    if (is_array($existingReservations) && !empty($existingReservations)) {
+        return;
+    }
+
+    $cookieRaw = $_COOKIE[getDemoCookieName()] ?? '';
+    if (!is_string($cookieRaw) || $cookieRaw === '') {
+        return;
+    }
+
+    $decoded = base64_decode($cookieRaw, true);
+    if ($decoded === false) {
+        return;
+    }
+
+    $payload = json_decode($decoded, true);
+    if (!is_array($payload)) {
+        return;
+    }
+
+    $cookieReservations = $payload['reservations'] ?? [];
+    if (!is_array($cookieReservations)) {
+        return;
+    }
+
+    $normalizedReservations = [];
+    $maxId = 0;
+    foreach ($cookieReservations as $cookieReservation) {
+        if (!is_array($cookieReservation)) {
+            continue;
+        }
+
+        $normalized = normalizeReservationRecordForCookie($cookieReservation);
+        if ($normalized === null) {
+            continue;
+        }
+
+        $normalizedReservations[] = $normalized;
+        $maxId = max($maxId, (int)$normalized['id']);
+    }
+
+    if (empty($normalizedReservations)) {
+        return;
+    }
+
+    usort($normalizedReservations, static fn(array $a, array $b): int => (int)$a['id'] <=> (int)$b['id']);
+
+    $_SESSION['hotel_demo']['reservations'] = $normalizedReservations;
+    $nextIdFromCookie = (int)($payload['next_id'] ?? 1);
+    $_SESSION['hotel_demo']['next_id'] = max($maxId + 1, $nextIdFromCookie, 1);
+}
+
+function syncDemoCookieFromSession(): void
+{
+    if (!shouldMirrorDemoCookieStorage()) {
+        return;
+    }
+
+    if (headers_sent()) {
+        return;
+    }
+
+    $cookieName = getDemoCookieName();
+    $rawReservations = $_SESSION['hotel_demo']['reservations'] ?? [];
+    if (!is_array($rawReservations)) {
+        return;
+    }
+
+    $normalizedReservations = [];
+    foreach ($rawReservations as $rawReservation) {
+        if (!is_array($rawReservation)) {
+            continue;
+        }
+
+        $normalized = normalizeReservationRecordForCookie($rawReservation);
+        if ($normalized !== null) {
+            $normalizedReservations[] = $normalized;
+        }
+    }
+
+    // Keep payload small enough for cookie limits.
+    $normalizedReservations = array_values(array_slice($normalizedReservations, -8));
+    $nextId = max((int)($_SESSION['hotel_demo']['next_id'] ?? 1), 1);
+
+    $encoded = base64_encode((string)json_encode([
+        'next_id' => $nextId,
+        'reservations' => $normalizedReservations,
+    ], JSON_UNESCAPED_SLASHES));
+
+    if (strlen($encoded) > 3800) {
+        $normalizedReservations = array_values(array_slice($normalizedReservations, -4));
+        $encoded = base64_encode((string)json_encode([
+            'next_id' => $nextId,
+            'reservations' => $normalizedReservations,
+        ], JSON_UNESCAPED_SLASHES));
+    }
+
+    setcookie($cookieName, $encoded, [
+        'expires' => time() + 86400,
+        'path' => '/',
+        'secure' => isHttpsRequest(),
+        'httponly' => true,
+        'samesite' => 'Lax',
+    ]);
 }
 
 function isSessionStorageMode(): bool
@@ -193,6 +350,8 @@ function ensureSessionStorageInitialized(): void
     if (!isset($_SESSION['hotel_demo']['next_id'])) {
         $_SESSION['hotel_demo']['next_id'] = 1;
     }
+
+    hydrateSessionFromDemoCookie();
 }
 
 function getPDO(): ?PDO
@@ -340,6 +499,8 @@ function saveReservation(?PDO $pdo, array $payload): void
             'reserved_at' => (string)$payload['reserved_at'],
             'created_at' => (new DateTime())->format('Y-m-d H:i:s'),
         ];
+
+        syncDemoCookieFromSession();
 
         return;
     }
@@ -690,6 +851,8 @@ function updateReservationById(?PDO $pdo, int $id, array $payload): bool
                 'created_at' => (string)($reservation['created_at'] ?? (new DateTime())->format('Y-m-d H:i:s')),
             ];
 
+            syncDemoCookieFromSession();
+
             return true;
         }
 
@@ -753,6 +916,8 @@ function deleteReservationById(?PDO $pdo, int $id): bool
 
             unset($_SESSION['hotel_demo']['reservations'][$index]);
             $_SESSION['hotel_demo']['reservations'] = array_values($_SESSION['hotel_demo']['reservations']);
+
+            syncDemoCookieFromSession();
 
             return true;
         }
