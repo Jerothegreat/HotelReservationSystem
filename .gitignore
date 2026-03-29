@@ -1,5 +1,3 @@
-/config/db.php
-/app/config/db.php
 *.log
 .DS_Store
 Thumbs.db
@@ -39,3 +37,6 @@ build/
 
 # OS leftovers (you already have some)
 Desktop.ini
+
+
+deployment.md
