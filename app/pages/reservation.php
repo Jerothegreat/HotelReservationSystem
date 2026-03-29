@@ -284,7 +284,15 @@ $errors = [];
 $billing = null;
 $showBilling = false;
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_reservation'])) {
+$isReservationSubmit =
+	$_SERVER['REQUEST_METHOD'] === 'POST' && (
+		isset($_POST['submit_reservation']) ||
+		isset($_POST['customer_name']) ||
+		isset($_POST['check_in']) ||
+		isset($_POST['check_out'])
+	);
+
+if ($isReservationSubmit) {
 	try {
 		$pdo = getPDO();
 		initializeDatabase($pdo);
@@ -356,6 +364,7 @@ $roomRateMatrixJson = json_encode(getRoomRateMatrix(), JSON_UNESCAPED_SLASHES);
 			<?php endif; ?>
 
 			<form id="reservation-form" method="post" action="reservation.php" class="space-y-12">
+				<input type="hidden" name="submit_reservation" value="1">
 				<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
 					<div class="space-y-2">
 						<label class="font-cinzel text-xs tracking-widest text-textsoft" for="customer_name">GUEST NAME</label>
