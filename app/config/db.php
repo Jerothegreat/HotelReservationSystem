@@ -170,6 +170,222 @@ function shouldMirrorDemoCookieStorage(): bool
     return envBool('HOTEL_DEMO_COOKIE_MIRROR', true);
 }
 
+function getVolatileHandoffCookieName(): string
+{
+    return envOrDefault('HOTEL_HANDOFF_COOKIE_NAME', 'hotel_demo_handoff');
+}
+
+function getVolatileHandoffTtlSeconds(): int
+{
+    $ttl = (int)envOrDefault('HOTEL_HANDOFF_TTL_SECONDS', '45');
+    return max(10, min($ttl, 300));
+}
+
+function hasActiveReservationFilters(array $filters): bool
+{
+    $keys = ['search', 'payment_type', 'room_type', 'from_date', 'to_date'];
+
+    foreach ($keys as $key) {
+        if (trim((string)($filters[$key] ?? '')) !== '') {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+function buildVolatileHandoffSigningKey(): string
+{
+    $sessionId = session_id();
+    $secret = envOrDefault('HOTEL_HANDOFF_SECRET', '');
+
+    return hash('sha256', $sessionId . '|' . $secret . '|hotel-handoff');
+}
+
+function clearVolatileHandoffCookie(): void
+{
+    if (headers_sent()) {
+        return;
+    }
+
+    setcookie(getVolatileHandoffCookieName(), '', [
+        'expires' => 1,
+        'path' => '/',
+        'secure' => isHttpsRequest(),
+        'httponly' => true,
+        'samesite' => 'Lax',
+    ]);
+}
+
+function createVolatileHandoffCookie(array $reservation): void
+{
+    if (!isVolatileDemoMode()) {
+        return;
+    }
+
+    if (headers_sent()) {
+        return;
+    }
+
+    $normalized = normalizeReservationRecordForCookie($reservation);
+    if ($normalized === null) {
+        return;
+    }
+
+    $issuedAt = time();
+    $data = [
+        'reservation' => $normalized,
+        'issued_at' => $issuedAt,
+    ];
+
+    $dataJson = json_encode($data, JSON_UNESCAPED_SLASHES);
+    if ($dataJson === false) {
+        return;
+    }
+
+    $signature = hash_hmac('sha256', $dataJson, buildVolatileHandoffSigningKey());
+    $payloadJson = json_encode([
+        'data' => $data,
+        'sig' => $signature,
+    ], JSON_UNESCAPED_SLASHES);
+    if ($payloadJson === false) {
+        return;
+    }
+
+    $encoded = base64_encode($payloadJson);
+
+    setcookie(getVolatileHandoffCookieName(), $encoded, [
+        'expires' => time() + getVolatileHandoffTtlSeconds(),
+        'path' => '/',
+        'secure' => isHttpsRequest(),
+        'httponly' => true,
+        'samesite' => 'Lax',
+    ]);
+}
+
+function consumeVolatileHandoffCookie(): ?array
+{
+    if (!isVolatileDemoMode()) {
+        return null;
+    }
+
+    $cookieRaw = $_COOKIE[getVolatileHandoffCookieName()] ?? '';
+    if (!is_string($cookieRaw) || $cookieRaw === '') {
+        return null;
+    }
+
+    // Consume once regardless of validity to prevent replay attempts.
+    clearVolatileHandoffCookie();
+
+    $decoded = base64_decode($cookieRaw, true);
+    if ($decoded === false) {
+        return null;
+    }
+
+    $payload = json_decode($decoded, true);
+    if (!is_array($payload)) {
+        return null;
+    }
+
+    $data = $payload['data'] ?? null;
+    $signature = (string)($payload['sig'] ?? '');
+
+    if (!is_array($data) || $signature === '') {
+        return null;
+    }
+
+    $dataJson = json_encode($data, JSON_UNESCAPED_SLASHES);
+    if ($dataJson === false) {
+        return null;
+    }
+
+    $expectedSignature = hash_hmac('sha256', $dataJson, buildVolatileHandoffSigningKey());
+    if (!hash_equals($expectedSignature, $signature)) {
+        return null;
+    }
+
+    $issuedAt = (int)($data['issued_at'] ?? 0);
+    if ($issuedAt < 1) {
+        return null;
+    }
+
+    if ((time() - $issuedAt) > getVolatileHandoffTtlSeconds()) {
+        return null;
+    }
+
+    $reservation = $data['reservation'] ?? null;
+    if (!is_array($reservation)) {
+        return null;
+    }
+
+    return normalizeReservationRecordForCookie($reservation);
+}
+
+function hydrateVolatileHandoffForListing(array $filters, int $page): void
+{
+    static $processed = false;
+
+    if ($processed) {
+        return;
+    }
+
+    if (!isVolatileDemoMode()) {
+        return;
+    }
+
+    if ($page !== 1 || hasActiveReservationFilters($filters)) {
+        return;
+    }
+
+    $processed = true;
+
+    $handoff = consumeVolatileHandoffCookie();
+    if ($handoff === null) {
+        return;
+    }
+
+    $handoffId = (int)$handoff['id'];
+    foreach ($_SESSION['hotel_demo']['volatile_reservations'] as $existing) {
+        if ((int)($existing['id'] ?? 0) === $handoffId) {
+            return;
+        }
+    }
+
+    $_SESSION['hotel_demo']['volatile_reservations'][] = $handoff;
+    $_SESSION['hotel_demo']['volatile_next_id'] = max(
+        (int)$_SESSION['hotel_demo']['volatile_next_id'],
+        $handoffId + 1
+    );
+}
+
+function emitLatestVolatileReservationHandoff(): void
+{
+    if (!isVolatileDemoMode()) {
+        return;
+    }
+
+    ensureSessionStorageInitialized();
+
+    $latestId = (int)$_SESSION['hotel_demo']['volatile_next_id'] - 1;
+    if ($latestId < 1) {
+        return;
+    }
+
+    $latestReservation = null;
+    foreach ($_SESSION['hotel_demo']['volatile_reservations'] as $reservation) {
+        if ((int)($reservation['id'] ?? 0) === $latestId) {
+            $latestReservation = $reservation;
+            break;
+        }
+    }
+
+    if (!is_array($latestReservation)) {
+        return;
+    }
+
+    createVolatileHandoffCookie($latestReservation);
+}
+
 function normalizeReservationRecordForCookie(array $reservation): ?array
 {
     $id = (int)($reservation['id'] ?? 0);
@@ -701,6 +917,7 @@ function fetchReservationsPage(?PDO $pdo, array $filters, int $page, int $perPag
 {
     if (isSessionStorageMode()) {
         ensureSessionStorageInitialized();
+        hydrateVolatileHandoffForListing($filters, $page);
 
         $page = max(1, $page);
         $perPage = max(1, $perPage);
@@ -771,6 +988,10 @@ function countReservationsForFilters(?PDO $pdo, array $filters): int
 {
     if (isSessionStorageMode()) {
         ensureSessionStorageInitialized();
+
+        $requestedPage = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT);
+        $page = $requestedPage === false || $requestedPage === null ? 1 : (int)$requestedPage;
+        hydrateVolatileHandoffForListing($filters, max(1, $page));
 
         $rows = array_filter(
             isVolatileDemoMode() ? $_SESSION['hotel_demo']['volatile_reservations'] : $_SESSION['hotel_demo']['reservations'],

@@ -39,3 +39,23 @@ HotelReservationSystemPintonSalve/
     └── reservation.html
 ```
 
+## Demo Volatile Mode
+
+Set the app to no-database demo mode with the values from .env.example:
+
+- HOTEL_STORAGE_MODE=volatile
+- HOTEL_DEMO_VOLATILE=1
+- HOTEL_DEMO_COOKIE_MIRROR=0
+
+Behavior in this mode:
+
+- Reservation submit stores data in session only.
+- A short-lived signed handoff cookie lets the first admin listing show the new reservation.
+- After the first admin listing request, data is consumed and disappears on refresh.
+
+Optional handoff tuning:
+
+- HOTEL_HANDOFF_TTL_SECONDS (default 45)
+- HOTEL_HANDOFF_SECRET
+- HOTEL_HANDOFF_COOKIE_NAME
+

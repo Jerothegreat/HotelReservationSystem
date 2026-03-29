@@ -162,6 +162,8 @@ function submitReservation(array $post, ?PDO $pdo): array
 		'reserved_at' => $reservedAt->format('Y-m-d H:i:s'),
 	]);
 
+	emitLatestVolatileReservationHandoff();
+
 	return [
 		'success' => true,
 		'errors' => [],
