@@ -68,6 +68,44 @@ function bootstrapEnv(): void
 
 bootstrapEnv();
 
+function configureSessionRuntime(): void
+{
+    if (session_status() !== PHP_SESSION_NONE) {
+        return;
+    }
+
+    $configuredPath = getenv('HOTEL_SESSION_SAVE_PATH');
+    $sessionPath = ($configuredPath !== false && trim($configuredPath) !== '')
+        ? trim($configuredPath)
+        : rtrim(sys_get_temp_dir(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . 'hotel_sessions';
+
+    if (!is_dir($sessionPath)) {
+        @mkdir($sessionPath, 0775, true);
+    }
+    if (is_dir($sessionPath) && is_writable($sessionPath)) {
+        session_save_path($sessionPath);
+    }
+
+    $httpsFlag = $_SERVER['HTTPS'] ?? '';
+    $forwardedProto = strtolower((string)($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? ''));
+    $isHttps = ($httpsFlag !== '' && strtolower((string)$httpsFlag) !== 'off') || $forwardedProto === 'https';
+
+    @ini_set('session.use_only_cookies', '1');
+    @ini_set('session.use_strict_mode', '1');
+    @ini_set('session.cookie_httponly', '1');
+    @ini_set('session.cookie_samesite', 'Lax');
+
+    session_set_cookie_params([
+        'lifetime' => 0,
+        'path' => '/',
+        'secure' => $isHttps,
+        'httponly' => true,
+        'samesite' => 'Lax',
+    ]);
+}
+
+configureSessionRuntime();
+
 if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
 }
