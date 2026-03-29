@@ -333,10 +333,6 @@ function hydrateVolatileHandoffForListing(array $filters, int $page): void
         return;
     }
 
-    if ($page !== 1 || hasActiveReservationFilters($filters)) {
-        return;
-    }
-
     $processed = true;
 
     $handoff = consumeVolatileHandoffCookie();
@@ -929,11 +925,6 @@ function fetchReservationsPage(?PDO $pdo, array $filters, int $page, int $perPag
         );
 
         usort($rows, static fn(array $a, array $b): int => (int)$b['id'] <=> (int)$a['id']);
-
-        if (isVolatileDemoMode()) {
-            // Volatile mode: consume records after first listing so refresh clears demo data.
-            $_SESSION['hotel_demo']['volatile_reservations'] = [];
-        }
 
         return array_values(array_slice($rows, $offset, $perPage));
     }
