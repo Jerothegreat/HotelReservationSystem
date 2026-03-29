@@ -63,7 +63,7 @@ function buildAdminListQuery(array $state, array $overrides = []): string
     return http_build_query($params);
 }
 
-function calculateBilling(PDO $pdo, string $roomCapacity, string $roomType, string $paymentType, DateTime $fromDate, DateTime $toDate): array
+function calculateBilling(?PDO $pdo, string $roomCapacity, string $roomType, string $paymentType, DateTime $fromDate, DateTime $toDate): array
 {
     $days = (int)$fromDate->diff($toDate)->format('%r%a');
     if ($days < 1) {
