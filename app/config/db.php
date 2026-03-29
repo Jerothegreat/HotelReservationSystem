@@ -142,6 +142,16 @@ function envBool(string $key, bool $default): bool
     return $default;
 }
 
+function isVolatileDemoMode(): bool
+{
+    $mode = strtolower(envOrDefault('HOTEL_STORAGE_MODE', 'mysql'));
+    if (in_array($mode, ['volatile', 'demo', 'request'], true)) {
+        return true;
+    }
+
+    return envBool('HOTEL_DEMO_VOLATILE', false);
+}
+
 function getDemoCookieName(): string
 {
     return envOrDefault('HOTEL_DEMO_COOKIE_NAME', 'hotel_demo_store');
@@ -150,6 +160,10 @@ function getDemoCookieName(): string
 function shouldMirrorDemoCookieStorage(): bool
 {
     if (!isSessionStorageMode()) {
+        return false;
+    }
+
+    if (isVolatileDemoMode()) {
         return false;
     }
 
@@ -298,7 +312,11 @@ function syncDemoCookieFromSession(): void
 function isSessionStorageMode(): bool
 {
     $mode = strtolower(envOrDefault('HOTEL_STORAGE_MODE', 'mysql'));
-    if ($mode === 'session') {
+    if (in_array($mode, ['session', 'volatile', 'demo', 'request'], true)) {
+        return true;
+    }
+
+    if (envBool('HOTEL_DEMO_VOLATILE', false)) {
         return true;
     }
 
@@ -349,6 +367,14 @@ function ensureSessionStorageInitialized(): void
 
     if (!isset($_SESSION['hotel_demo']['next_id'])) {
         $_SESSION['hotel_demo']['next_id'] = 1;
+    }
+
+    if (!isset($_SESSION['hotel_demo']['volatile_reservations']) || !is_array($_SESSION['hotel_demo']['volatile_reservations'])) {
+        $_SESSION['hotel_demo']['volatile_reservations'] = [];
+    }
+
+    if (!isset($_SESSION['hotel_demo']['volatile_next_id'])) {
+        $_SESSION['hotel_demo']['volatile_next_id'] = 1;
     }
 
     hydrateSessionFromDemoCookie();
@@ -478,6 +504,32 @@ function saveReservation(?PDO $pdo, array $payload): void
     if (isSessionStorageMode()) {
         ensureSessionStorageInitialized();
 
+        if (isVolatileDemoMode()) {
+            $id = (int)$_SESSION['hotel_demo']['volatile_next_id'];
+            $_SESSION['hotel_demo']['volatile_next_id'] = $id + 1;
+
+            $_SESSION['hotel_demo']['volatile_reservations'][] = [
+                'id' => $id,
+                'customer_name' => (string)$payload['customer_name'],
+                'contact_number' => (string)$payload['contact_number'],
+                'from_date' => (string)$payload['from_date'],
+                'to_date' => (string)$payload['to_date'],
+                'room_type' => (string)$payload['room_type'],
+                'room_capacity' => (string)$payload['room_capacity'],
+                'payment_type' => (string)$payload['payment_type'],
+                'no_of_days' => (int)$payload['no_of_days'],
+                'rate_per_day' => (float)$payload['rate_per_day'],
+                'subtotal' => (float)$payload['subtotal'],
+                'adjust_label' => (string)$payload['adjust_label'],
+                'adjust_value' => (float)$payload['adjust_value'],
+                'total_bill' => (float)$payload['total_bill'],
+                'reserved_at' => (string)$payload['reserved_at'],
+                'created_at' => (new DateTime())->format('Y-m-d H:i:s'),
+            ];
+
+            return;
+        }
+
         $id = (int)$_SESSION['hotel_demo']['next_id'];
         $_SESSION['hotel_demo']['next_id'] = $id + 1;
 
@@ -604,6 +656,13 @@ function fetchReservations(?PDO $pdo): array
 {
     if (isSessionStorageMode()) {
         ensureSessionStorageInitialized();
+
+        if (isVolatileDemoMode()) {
+            $reservations = $_SESSION['hotel_demo']['volatile_reservations'];
+            usort($reservations, static fn(array $a, array $b): int => (int)$b['id'] <=> (int)$a['id']);
+            return array_values($reservations);
+        }
+
         $reservations = $_SESSION['hotel_demo']['reservations'];
         usort($reservations, static fn(array $a, array $b): int => (int)$b['id'] <=> (int)$a['id']);
         return array_values($reservations);
@@ -648,11 +707,16 @@ function fetchReservationsPage(?PDO $pdo, array $filters, int $page, int $perPag
         $offset = ($page - 1) * $perPage;
 
         $rows = array_filter(
-            $_SESSION['hotel_demo']['reservations'],
+            isVolatileDemoMode() ? $_SESSION['hotel_demo']['volatile_reservations'] : $_SESSION['hotel_demo']['reservations'],
             static fn(array $reservation): bool => reservationMatchesFilters($reservation, $filters)
         );
 
         usort($rows, static fn(array $a, array $b): int => (int)$b['id'] <=> (int)$a['id']);
+
+        if (isVolatileDemoMode()) {
+            // Volatile mode: consume records after first listing so refresh clears demo data.
+            $_SESSION['hotel_demo']['volatile_reservations'] = [];
+        }
 
         return array_values(array_slice($rows, $offset, $perPage));
     }
@@ -709,7 +773,7 @@ function countReservationsForFilters(?PDO $pdo, array $filters): int
         ensureSessionStorageInitialized();
 
         $rows = array_filter(
-            $_SESSION['hotel_demo']['reservations'],
+            isVolatileDemoMode() ? $_SESSION['hotel_demo']['volatile_reservations'] : $_SESSION['hotel_demo']['reservations'],
             static fn(array $reservation): bool => reservationMatchesFilters($reservation, $filters)
         );
 
@@ -780,7 +844,11 @@ function fetchReservationById(?PDO $pdo, int $id): ?array
     if (isSessionStorageMode()) {
         ensureSessionStorageInitialized();
 
-        foreach ($_SESSION['hotel_demo']['reservations'] as $reservation) {
+        $source = isVolatileDemoMode()
+            ? $_SESSION['hotel_demo']['volatile_reservations']
+            : $_SESSION['hotel_demo']['reservations'];
+
+        foreach ($source as $reservation) {
             if ((int)$reservation['id'] === $id) {
                 return $reservation;
             }
@@ -827,12 +895,14 @@ function updateReservationById(?PDO $pdo, int $id, array $payload): bool
     if (isSessionStorageMode()) {
         ensureSessionStorageInitialized();
 
-        foreach ($_SESSION['hotel_demo']['reservations'] as $index => $reservation) {
+        $collectionKey = isVolatileDemoMode() ? 'volatile_reservations' : 'reservations';
+
+        foreach ($_SESSION['hotel_demo'][$collectionKey] as $index => $reservation) {
             if ((int)$reservation['id'] !== $id) {
                 continue;
             }
 
-            $_SESSION['hotel_demo']['reservations'][$index] = [
+            $_SESSION['hotel_demo'][$collectionKey][$index] = [
                 'id' => $id,
                 'customer_name' => (string)$payload['customer_name'],
                 'contact_number' => (string)$payload['contact_number'],
@@ -851,7 +921,9 @@ function updateReservationById(?PDO $pdo, int $id, array $payload): bool
                 'created_at' => (string)($reservation['created_at'] ?? (new DateTime())->format('Y-m-d H:i:s')),
             ];
 
-            syncDemoCookieFromSession();
+            if (!isVolatileDemoMode()) {
+                syncDemoCookieFromSession();
+            }
 
             return true;
         }
@@ -909,15 +981,19 @@ function deleteReservationById(?PDO $pdo, int $id): bool
     if (isSessionStorageMode()) {
         ensureSessionStorageInitialized();
 
-        foreach ($_SESSION['hotel_demo']['reservations'] as $index => $reservation) {
+        $collectionKey = isVolatileDemoMode() ? 'volatile_reservations' : 'reservations';
+
+        foreach ($_SESSION['hotel_demo'][$collectionKey] as $index => $reservation) {
             if ((int)$reservation['id'] !== $id) {
                 continue;
             }
 
-            unset($_SESSION['hotel_demo']['reservations'][$index]);
-            $_SESSION['hotel_demo']['reservations'] = array_values($_SESSION['hotel_demo']['reservations']);
+            unset($_SESSION['hotel_demo'][$collectionKey][$index]);
+            $_SESSION['hotel_demo'][$collectionKey] = array_values($_SESSION['hotel_demo'][$collectionKey]);
 
-            syncDemoCookieFromSession();
+            if (!isVolatileDemoMode()) {
+                syncDemoCookieFromSession();
+            }
 
             return true;
         }
