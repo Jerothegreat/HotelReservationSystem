@@ -1,7 +1,7 @@
 FROM php:8.2-apache
 
-# Fix MPM conflict: disable event/worker, keep only prefork (required for mod_php)
-RUN a2dismod mpm_event mpm_worker 2>/dev/null || true \
+# Fix MPM conflict: disable all common MPM modules, then enable only prefork (required for mod_php)
+RUN a2dismod mpm_event mpm_worker mpm_prefork 2>/dev/null || true \
  && a2enmod mpm_prefork rewrite
 
 # Apache config: allow .htaccess overrides

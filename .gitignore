@@ -3,3 +3,39 @@
 *.log
 .DS_Store
 Thumbs.db
+
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+*.local
+
+# Dependency directories (if used)
+vendor/
+node_modules/
+
+# IDE / editor
+.vscode/
+.idea/
+*.code-workspace
+
+# Runtime / temp
+tmp/
+temp/
+cache/
+sessions/
+uploads/
+*.pid
+
+# Test / coverage
+coverage/
+.phpunit.result.cache
+
+# Build / package artifacts
+dist/
+build/
+*.zip
+
+# OS leftovers (you already have some)
+Desktop.ini
