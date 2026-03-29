@@ -6,10 +6,14 @@ RUN set -eux; \
  rm -f /etc/apache2/mods-enabled/mpm_*.load /etc/apache2/mods-enabled/mpm_*.conf; \
  rm -f /etc/apache2/mods-available/mpm_event.* /etc/apache2/mods-available/mpm_worker.* /etc/apache2/mods-available/mpm_itk.* /etc/apache2/mods-available/mpm_winnt.*; \
  a2enmod mpm_prefork rewrite; \
- enabled_mpm_loads="$(find /etc/apache2/mods-enabled -maxdepth 1 -type l -name 'mpm_*.load' -printf '%f\n' | sort)"; \
- [ "$enabled_mpm_loads" = "mpm_prefork.load" ]; \
- enabled_mpm_confs="$(find /etc/apache2/mods-enabled -maxdepth 1 -type l -name 'mpm_*.conf' -printf '%f\n' | sort)"; \
- [ "$enabled_mpm_confs" = "mpm_prefork.conf" ]
+ rm -f /etc/apache2/mods-enabled/mpm_event.* /etc/apache2/mods-enabled/mpm_worker.*; \
+ test -e /etc/apache2/mods-available/mpm_prefork.load; \
+ test -e /etc/apache2/mods-available/mpm_prefork.conf; \
+ ln -sf /etc/apache2/mods-available/mpm_prefork.load /etc/apache2/mods-enabled/mpm_prefork.load; \
+ ln -sf /etc/apache2/mods-available/mpm_prefork.conf /etc/apache2/mods-enabled/mpm_prefork.conf; \
+ test "$(find /etc/apache2/mods-enabled -maxdepth 1 \( -type f -o -type l \) -name 'mpm_*.*' | wc -l)" -eq 2; \
+ test ! -e /etc/apache2/mods-enabled/mpm_event.load; \
+ test ! -e /etc/apache2/mods-enabled/mpm_event.conf
 
 # Apache config: allow .htaccess overrides
 RUN echo '<Directory /var/www/html>\n\
