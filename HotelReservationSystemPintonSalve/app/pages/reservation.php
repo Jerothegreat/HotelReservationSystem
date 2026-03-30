@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../config/db.php';
 
-function submitReservation(array $post, ?PDO $pdo): array
+function submitReservation(array $post, PDO $pdo): array
 {
 	$roomTypeOptions = ['Suite', 'De Luxe', 'Regular'];
 	$capacityOptions = ['Family', 'Double', 'Single'];
@@ -162,8 +162,6 @@ function submitReservation(array $post, ?PDO $pdo): array
 		'reserved_at' => $reservedAt->format('Y-m-d H:i:s'),
 	]);
 
-	emitLatestVolatileReservationHandoff();
-
 	return [
 		'success' => true,
 		'errors' => [],
@@ -288,15 +286,7 @@ $showBilling = false;
 $isSessionMode = isSessionStorageMode();
 $storageNotice = $isSessionMode ? getStorageModeNotice() : '';
 
-$isReservationSubmit =
-	$_SERVER['REQUEST_METHOD'] === 'POST' && (
-		isset($_POST['submit_reservation']) ||
-		isset($_POST['customer_name']) ||
-		isset($_POST['check_in']) ||
-		isset($_POST['check_out'])
-	);
-
-if ($isReservationSubmit) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_reservation'])) {
 	try {
 		$pdo = getPDO();
 		initializeDatabase($pdo);
@@ -380,7 +370,6 @@ $roomRateMatrixJson = json_encode(getRoomRateMatrix(), JSON_UNESCAPED_SLASHES);
 			<?php endif; ?>
 
 			<form id="reservation-form" method="post" action="reservation.php" class="space-y-12">
-				<input type="hidden" name="submit_reservation" value="1">
 				<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
 					<div class="space-y-2">
 						<label class="font-cinzel text-xs tracking-widest text-textsoft" for="customer_name">GUEST NAME</label>

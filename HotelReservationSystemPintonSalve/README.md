@@ -17,7 +17,7 @@ HotelReservationSystemPintonSalve/
 ├── footer.php                 # Compatibility wrapper -> app/includes/footer.php
 ├── app/
 │   ├── config/
-│   │   └── db.php             # Storage mode, DB connection, and reservation data access
+│   │   └── db.php             # Database connection and reservation data access
 │   ├── includes/
 │   │   ├── header.php         # Shared top layout and navigation
 │   │   └── footer.php         # Shared footer and scripts output
@@ -39,38 +39,38 @@ HotelReservationSystemPintonSalve/
     └── reservation.html
 ```
 
-## Demo Volatile Mode
+## Why This Structure Is Better
 
-Set the app to no-database demo mode with the values from .env.example:
+- Separation of concerns: page views, shared includes, DB logic, and assets are now separated.
+- Safer includes: app pages now use absolute include paths based on `__DIR__`.
+- Backward compatibility: old root page URLs (`home.php`, `admin.php`, etc.) still work.
+- Presentation-ready: folders clearly communicate architecture to reviewers and panelists.
 
-- HOTEL_STORAGE_MODE=volatile
-- HOTEL_DEMO_VOLATILE=1
-- HOTEL_DEMO_COOKIE_MIRROR=0
+## Run Locally in XAMPP
 
-Behavior in this mode:
+1. Put the folder under `htdocs`.
+2. Start Apache and MySQL.
+3. Open `http://localhost/Elective2/elective2/HotelReservationSystemPintonSalve/`.
 
-- Reservation submit stores data in session only.
-- A short-lived signed handoff cookie lets the first admin listing show the new reservation.
-- After the first admin listing request, data is consumed and disappears on refresh.
+## Portfolio Demo Deployment (Free Hosting)
 
-Fallback behavior:
+Use the step-by-step guide in `DEPLOY_PORTFOLIO.md`.
 
-- If `HOTEL_STORAGE_MODE` is missing/invalid, the app now defaults to temporary volatile mode.
-- Set `HOTEL_STORAGE_MODE=mysql` explicitly when you want persistent DB mode.
+Database config now supports environment values:
 
-Optional handoff tuning:
+- `HOTEL_DB_HOST`
+- `HOTEL_DB_PORT`
+- `HOTEL_DB_NAME`
+- `HOTEL_DB_USER`
+- `HOTEL_DB_PASS`
+- `HOTEL_DB_CHARSET` (optional)
+- `HOTEL_DB_AUTO_CREATE_DATABASE` (`0` on shared/free hosting, optional `1` for local root-based setup)
+- `HOTEL_STORAGE_MODE` (`mysql` default, use `session` for no-persistence demo mode)
+- `HOTEL_DEMO_SESSION_ONLY` (optional boolean toggle for session mode)
 
-- HOTEL_HANDOFF_TTL_SECONDS (default 45)
-- HOTEL_HANDOFF_SECRET
-- HOTEL_HANDOFF_COOKIE_NAME
+## Suggested Next Improvements
 
-## Railway Debugging Quick Check
-
-Open `/healthcheck.php` after deploy. You should see lines like:
-
-- `storage_mode=volatile`
-- `session_storage=1`
-- `database_required=0`
-
-If `database_required=1`, your deployment is in MySQL mode and needs valid `HOTEL_DB_*` values.
-
+- Add environment-based DB config (`.env`) and remove hard-coded credentials.
+- Create `app/services/ReservationService.php` to move business logic out of page files.
+- Add `public/` web root and move route wrappers there when deploying to production hosting.
+- Add basic automated tests for billing and reservation validation logic.
